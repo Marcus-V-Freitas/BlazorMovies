@@ -1,0 +1,52 @@
+﻿@typeparam T
+
+@if (List is null)
+{
+    @if (NullTemplate is not null)
+    {
+
+        @NullTemplate
+    }
+    else
+    {
+        //Default Content
+        <img src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+    }
+}
+else if (List.Count == 0)
+{
+    @if (EmptyTemplate is not null)
+    {
+
+        @EmptyTemplate
+    }
+    else
+    {
+        //Default Content
+        <text>There are no records to show</text>
+    }
+
+}
+else
+{
+    foreach (var element in List)
+    {
+        @ElementTemplate(element);
+    }
+}
+
+@code {
+
+    [Parameter]
+    public List<T> List { get; set; }
+
+    [Parameter]
+    public RenderFragment EmptyTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment NullTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment<T> ElementTemplate { get; set; }
+
+}
