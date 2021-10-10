@@ -1,34 +1,24 @@
 ﻿@page "/"
+@page "/index"
+@inject IMoviesRepository moviesRepository
 
 <div>
-    <h3>Movie</h3>
-    <MoviesList Movies="Movies" />
+    <h3>In theaters</h3>
+    <MoviesList Movies="InTheaters" />
 </div>
 
 <div>
-    <h2>Create a Movie</h2>
-    <DummyTextBox placeholder="movie name" />
+    <h3>Upcoming Releases</h3>
+    <MoviesList Movies="UpcomingReleases" />
 </div>
 
 @code{
-
-    private List<MovieDTO> Movies;
-
-    protected override async Task OnInitializedAsync()
+    private List<MovieDTO> InTheaters;
+    private List<MovieDTO> UpcomingReleases;
+    protected async override Task OnInitializedAsync()
     {
-        await Task.Delay(3000);
-        Movies = new()
-        {
-                new()
-                {
-                    Title = "Spider Man",
-                    ReleaseDate = new DateTime(2019, 7, 2)
-                },
-                new()
-                {
-                    Title = "Moana",
-                    ReleaseDate = new DateTime(2016, 11, 23)
-                }
-            };
+        var response = await moviesRepository.GetIndexPageDTO();
+        InTheaters = response.Intheaters;
+        UpcomingReleases = response.UpcomingReleases;
     }
 }

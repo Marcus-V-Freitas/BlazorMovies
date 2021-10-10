@@ -1,21 +1,28 @@
-﻿<input type="checkbox" @onchange="@(() => displayButtons = !displayButtons)" />
+﻿@inject IJSRuntime js
+@inject IMoviesRepository moviesRepository
 
-<GenericList List="Movies">
-    <ElementTemplate Context="movie">
-        <IndividualMovie Movie="movie" DisplayButtons="displayButtons" DeleteMovie="Delete" />
-    </ElementTemplate>
-</GenericList>
+<div class="movies-container">
+    <GenericList List="Movies">
+        <ElementTemplate Context="movie">
+            <IndividualMovie Movie="movie"
+                             DeleteMovie="DeleteMovie" @key="movie.Id" />
+        </ElementTemplate>
+    </GenericList>
+</div>
 
 @code {
+    [Parameter] public List<MovieDTO> Movies { get; set; }
 
-    [Parameter]
-    public List<MovieDTO> Movies { get; set; }
-
-    private bool displayButtons = false;
-
-    private void Delete(MovieDTO movie)
+    private async Task DeleteMovie(MovieDTO movie)
     {
-        Movies.Remove(movie);
-    }
+        await js.MyFunction("custom message");
+        var confirmed = await js.Confirm($"Are you sure you want to delete {movie.Title}?");
 
+        if (confirmed)
+        {
+            await moviesRepository.DeleteMovie(movie.Id);
+            Movies.Remove(movie);
+
+        }
+    }
 }
